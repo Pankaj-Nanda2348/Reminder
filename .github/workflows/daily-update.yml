@@ -1,9 +1,14 @@
 name: Daily Auto Commit
 
+# VERY IMPORTANT: allow the workflow to push commits
+permissions:
+  contents: write
+
 on:
   schedule:
-    - cron: '55 11 * * *'   # Runs daily at 10:00 UTC
-  workflow_dispatch:       # Allows manual trigger (important for testing)
+    # Runs once per day at 10:00 UTC
+    - cron: '59 11 * * *'
+  workflow_dispatch:  # Allows manual trigger for testing
 
 jobs:
   update:
@@ -16,11 +21,11 @@ jobs:
       - name: 21f1002348@ds.study.iitm.ac.in - Create daily update
         run: |
           echo "Last updated on $(date)" >> daily-log.txt
-          
+
       - name: Commit changes
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add daily-log.txt
-          git commit -m "Daily automated commit"
+          git commit -m "Daily automated commit" || echo "No changes to commit"
           git push
